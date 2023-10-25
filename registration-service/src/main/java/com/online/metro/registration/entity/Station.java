@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Station {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,4 +25,8 @@ public class Station {
     private Long nextStationId;
     private float distance;
     private Long routeId;
+
+    public static Station of() {
+        return null;
+    }
 }

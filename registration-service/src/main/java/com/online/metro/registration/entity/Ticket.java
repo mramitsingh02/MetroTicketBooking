@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -29,12 +28,12 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long ticketId;
-    private String sourceStation;
-    private String destinationStation;
+    private Long sourceStationId;
+    private Long destinationStationId;
     private Double fear;
     @CreationTimestamp
     private LocalDateTime generatedOn;
-    private String bookingStation;
+    private Long bookingStationId;
     private PassengerType passengerType;
     private PaymentType paymentType;
     private TripType tripType;

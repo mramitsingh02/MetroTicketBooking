@@ -1,5 +1,6 @@
 package com.online.metro.registration.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class TripDTO {
     private Long tripId;
     private Long ticketId;
@@ -31,8 +33,9 @@ public class TripDTO {
         startOn = LocalDateTime.now(Clock.systemDefaultZone());
         return this;
     }
+
     public TripDTO stop() {
-        tripType =TripType.STOP;
+        tripType = TripType.STOP;
         closeOn = LocalDateTime.now(Clock.systemDefaultZone());
         return this;
     }

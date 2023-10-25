@@ -1,25 +1,22 @@
 package com.online.metro.registration.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.online.metro.registration.entity.Passenger;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
-public class RouteDTO {
-    private Long routeId;
-    private String routeName;
-    private String routeNickName;
-    private List<StationDTO> stations;
-    private LocalDateTime createdOn;
-    private LocalDateTime updatedOn;
+public final class PriceDTO {
+    private Passenger passenger;
+    private StationDTO source;
+    private StationDTO destination;
+    private float distance;
+    private Double fair;
 
 }

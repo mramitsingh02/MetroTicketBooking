@@ -31,11 +31,11 @@ class TripRepositoryTest {
     @Test
     void shouldSaveTripForAnonymousUser() {
         final Ticket ticket = Ticket.builder()
-                .sourceStation("HUD")
-                .destinationStation("ND")
+                .sourceStationId(1001l)
+                .destinationStationId(1010l)
                 .fear(40d)
                 .generatedOn(LocalDateTime.now())
-                .bookingStation("HUD")
+                .bookingStationId(1001l)
                 .passengerType(PassengerType.ANONYMOUS)
                 .paymentType(PaymentType.CASH)
                 .createdOn(LocalDateTime.now())
@@ -60,11 +60,11 @@ class TripRepositoryTest {
     @Test
     void shouldSaveTripForStaff() {
         final Ticket ticket = Ticket.builder()
-                .sourceStation("HUD")
-                .destinationStation("ND")
+                .sourceStationId(1001l)
+                .destinationStationId(1010l)
                 .fear(40d)
                 .generatedOn(LocalDateTime.now())
-                .bookingStation("HUD")
+                .bookingStationId(1001l)
                 .passengerType(PassengerType.ANONYMOUS)
                 .paymentType(PaymentType.CASH)
                 .createdOn(LocalDateTime.now())

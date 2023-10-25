@@ -1,7 +1,7 @@
 package com.online.metro.registration.service.impl;
 
 import com.online.metro.registration.dto.StationDTO;
-import com.online.metro.registration.dto.TripDTO;
+import com.online.metro.registration.dto.StationDistanceDTO;
 import com.online.metro.registration.entity.Route;
 import com.online.metro.registration.entity.Station;
 import com.online.metro.registration.repository.RouteRepository;
@@ -10,8 +10,9 @@ import com.online.metro.registration.service.StationService;
 import com.online.metro.registration.service.mapper.StationMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class StationServiceImpl implements StationService {
@@ -34,24 +35,72 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
-    public TripDTO getStationByRoute(final String source, final String destination) {
-        final Station fromStation = stationRepository.findByStationName(source);
-        final Station toStation = stationRepository.findByStationName(destination);
-        List<Station> stations = new ArrayList<>();
+    public StationDistanceDTO findDistanceBetweenStations(final String source, final String destination) {
+        final Station fromStation = stationRepository.findByStationName(source).orElseThrow(() -> new RuntimeException(
+                "Source Station not found."));
+        final Station toStation = stationRepository.findByStationName(destination).orElseThrow(() -> new RuntimeException(
+                "Destination Station not found."));;
         Station currentStation = fromStation;
-       /* while (Objects.nonNull(currentStation) && Objects.nonNull(currentStation.getNextStationId())) {
-            stations.add(currentStation);
+        AtomicInteger numberOfStation = new AtomicInteger(0);
+        AtomicInteger totalDistance = new AtomicInteger(0);
+
+        if (fromStation.getStationId() < toStation.getStationId()) {
+            moveForward(toStation, currentStation, numberOfStation, totalDistance);
+        } else if (fromStation.getStationId() > toStation.getStationId()) {
+            moveBackward(toStation, currentStation, numberOfStation, totalDistance);
+        }
+
+        return StationDistanceDTO.builder()
+                .numberOfStop(numberOfStation.get())
+                .distance(totalDistance.get())
+                .source(stationMapper.entityToDTO(fromStation))
+                .destination(stationMapper.entityToDTO(toStation))
+                .build();
+    }
+
+    @Override
+    public StationDistanceDTO findDistanceBetweenStations(final Long sourceId, final Long destinationId) {
+        final Station fromStation = stationRepository.findById(sourceId).orElseThrow(() -> new RuntimeException(
+                "Source Station not found."));
+        final Station toStation = stationRepository.findById(destinationId).orElseThrow(() -> new RuntimeException(
+                "Destination Station not found."));
+        Station currentStation = fromStation;
+        AtomicInteger numberOfStation = new AtomicInteger(0);
+        AtomicInteger totalDistance = new AtomicInteger(0);
+
+        if (fromStation.getStationId() < toStation.getStationId()) {
+            moveForward(toStation, currentStation, numberOfStation, totalDistance);
+        } else if (fromStation.getStationId() > toStation.getStationId()) {
+            moveBackward(toStation, currentStation, numberOfStation, totalDistance);
+        }
+        return StationDistanceDTO.builder()
+                .numberOfStop(numberOfStation.get())
+                .distance(totalDistance.get())
+                .source(stationMapper.entityToDTO(fromStation))
+                .destination(stationMapper.entityToDTO(toStation))
+                .build();
+    }
+
+    private void moveForward(final Station toStation, Station currentStation, final AtomicInteger numberOfStation, final AtomicInteger totalDistance) {
+        while (Objects.nonNull(currentStation) && Objects.nonNull(currentStation.getNextStationId())) {
             if (currentStation.getStationName().equals(toStation.getStationName())) {
                 break;
             }
-            currentStation = stationRepository.findById(currentStation.getNextStationId()).orElse(null);
+            totalDistance.addAndGet((int) currentStation.getDistance());
+            numberOfStation.incrementAndGet();
+            currentStation = stationRepository.findById(currentStation.getNextStationId()).orElse(Station.of());
         }
-*/
+    }
 
-        return TripDTO.builder()
-
-
-                .build();
+    private void moveBackward(final Station toStation, Station currentStation, final AtomicInteger numberOfStation, final AtomicInteger totalDistance) {
+        while (Objects.nonNull(currentStation) && Objects.nonNull(currentStation.getNextStationId())) {
+            if (currentStation.getStationName().equals(toStation.getStationName())) {
+                break;
+            }
+            totalDistance.addAndGet((int) currentStation.getDistance());
+            numberOfStation.incrementAndGet();
+            currentStation = stationRepository.findById(currentStation.getPreviousStationId()).orElse(Station.of());
+        }
     }
 
     @Override

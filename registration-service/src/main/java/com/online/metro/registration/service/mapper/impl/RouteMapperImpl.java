@@ -5,16 +5,27 @@ import com.online.metro.registration.entity.Route;
 import com.online.metro.registration.service.mapper.RouteMapper;
 import org.springframework.stereotype.Component;
 
+import static java.util.Objects.isNull;
+
 @Component
 public class RouteMapperImpl implements RouteMapper {
     @Override
     public Route dtoToEntity(final RouteDTO dto) {
-        return new Route(dto.getRouteId(), dto.getRouteName(), dto.getRouteNickName(),dto.getCreatedOn(),
-                dto.getUpdatedOn());
+        return Route.builder()
+                .routeId(dto.getRouteId())
+                .routeName(dto.getRouteName())
+                .routeNickName(dto.getRouteNickName())
+                .createdOn(dto.getCreatedOn())
+                .updatedOn(dto.getUpdatedOn())
+                .build();
     }
 
     @Override
     public RouteDTO entityToDTO(final Route entity) {
+        if (isNull(entity)) {
+            return null;
+        }
+
         return RouteDTO.builder()
                 .routeId(entity.getRouteId())
                 .routeName(entity.getRouteName())

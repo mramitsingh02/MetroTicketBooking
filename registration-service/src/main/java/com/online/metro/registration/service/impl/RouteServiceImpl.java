@@ -41,4 +41,9 @@ public class RouteServiceImpl implements RouteService {
 
         return routeMapper.entityToDTO(repository.save(routeMapper.dtoToEntity(routeDTO)));
     }
+
+    @Override
+    public RouteDTO findById(final Long routeId) {
+        return routeMapper.entityToDTO(repository.findById(routeId).orElse(null));
+    }
 }

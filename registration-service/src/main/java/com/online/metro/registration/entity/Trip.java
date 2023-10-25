@@ -8,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,8 +37,6 @@ public class Trip {
     private float distanceCover;
     private Double price;
     private TripType tripType;
-    @CreationTimestamp
     private LocalDateTime startOn;
-    @UpdateTimestamp
     private LocalDateTime closeOn;
 }

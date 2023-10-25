@@ -11,4 +11,6 @@ public interface RouteService {
     RouteDTO findByRouteName(String routeName);
 
     RouteDTO saveRoute(RouteDTO routeDTO);
+
+    RouteDTO findById(Long routeId);
 }

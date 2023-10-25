@@ -1,7 +1,7 @@
 package com.online.metro.registration.controller;
 
 import com.online.metro.registration.dto.StationDTO;
-import com.online.metro.registration.dto.TripDTO;
+import com.online.metro.registration.dto.StationDistanceDTO;
 import com.online.metro.registration.service.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +27,8 @@ public class StationController {
         return ResponseEntity.ok(stationService.getAllStationByRouteName(routeName));
     }
     @GetMapping("/source/{source}/destination/{destination}")
-    public ResponseEntity<TripDTO> listOfStation(@PathVariable String source, @PathVariable String destination) {
-        return ResponseEntity.ok(stationService.getStationByRoute(source, destination));
+    public ResponseEntity<StationDistanceDTO> listOfStation(@PathVariable String source, @PathVariable String destination) {
+        return ResponseEntity.ok(stationService.findDistanceBetweenStations(source, destination));
     }
     @PostMapping("/route/{routeName}")
     public ResponseEntity<StationDTO> save(@RequestBody StationDTO stationDTO) {
