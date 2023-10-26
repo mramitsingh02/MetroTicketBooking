@@ -5,6 +5,7 @@ import com.online.metro.registration.dto.PaymentType;
 import com.online.metro.registration.dto.PriceDTO;
 import com.online.metro.registration.dto.StationDTO;
 import com.online.metro.registration.dto.TicketDTO;
+import com.online.metro.registration.dto.TripDTO;
 import com.online.metro.registration.dto.TripType;
 import com.online.metro.registration.service.BookingService;
 import com.online.metro.registration.service.TripService;
@@ -19,10 +20,9 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @AutoConfigureJsonTesters
 @SpringBootTest
@@ -35,4 +35,88 @@ class TripControllerTest extends AbstractTest {
     @Autowired
     private MockMvc mockMvc;
 
+
+    @Test
+    void createTrip() throws Exception {
+        String path = "http://localhost:6666/trip/";
+        final Long from = 1001L;
+        final Long to = 1005L;
+        TicketDTO ticketDTO = getTicketDTO(from, to);
+        final PriceDTO priceDTO = PriceDTO.builder().fair(200d).source(StationDTO.of(from)).destination(StationDTO.of(to)).distance(14).build();
+        final TicketDTO persistTicketDTO = getTicketDTO(from, to);
+        persistTicketDTO.setTicketId(1000l);
+        persistTicketDTO.setPrice(priceDTO.getFair());
+        persistTicketDTO.setPaymentType(PaymentType.CASH);
+        persistTicketDTO.setTripType(TripType.NOT_TO_START);
+
+        when(bookingService.findByTicketId(persistTicketDTO.getTicketId())).thenReturn(persistTicketDTO);
+        final TripDTO tripDTO = new TripDTO(persistTicketDTO);
+        final TripDTO pesistanceTripDTO = new TripDTO(persistTicketDTO);
+        pesistanceTripDTO.setTripId(1l);
+        when(tripService.saveTrip(tripDTO)).thenReturn(pesistanceTripDTO);
+
+        String newCustomerJson = mapToJson(tripDTO);
+        MockHttpServletResponse response = mockMvc.perform(post(path)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newCustomerJson)).andReturn().getResponse();
+        assertEquals(201, response.getStatus());
+
+    }
+
+    private TicketDTO getTicketDTO(final Long from, final Long to) {
+        return TicketDTO.builder()
+                .bookingStationId(from)
+                .sourceStationId(from)
+                .destinationStationId(to)
+                .passengerType(PassengerType.ANONYMOUS)
+                .build();
+    }
+
+    @Test
+    void startTrip() throws Exception {
+        String path = "http://localhost:6666/trip/1000/start";
+        final Long from = 1001L;
+        final Long to = 1005L;
+        final PriceDTO priceDTO = PriceDTO.builder().fair(200d).source(StationDTO.of(from)).destination(StationDTO.of(to)).distance(14).build();
+        final TicketDTO persistTicketDTO = getTicketDTO(from, to);
+        persistTicketDTO.setTicketId(1000l);
+        persistTicketDTO.setPrice(priceDTO.getFair());
+        persistTicketDTO.setPaymentType(PaymentType.CASH);
+        persistTicketDTO.setTripType(TripType.NOT_TO_START);
+
+        when(bookingService.findByTicketId(persistTicketDTO.getTicketId())).thenReturn(persistTicketDTO);
+        final TripDTO tripDTO = new TripDTO(persistTicketDTO);
+        final TripDTO pesistanceTripDTO = new TripDTO(persistTicketDTO);
+        pesistanceTripDTO.setTripId(1l);
+        when(tripService.saveTrip(tripDTO)).thenReturn(pesistanceTripDTO);
+
+        MockHttpServletResponse response = mockMvc.perform(put(path)
+                .contentType(MediaType.APPLICATION_JSON)).andReturn().getResponse();
+        assertEquals(200, response.getStatus());
+
+    }
+
+    @Test
+    void stopTrip() throws Exception {
+        String path = "http://localhost:6666/trip/1000/stop";
+        final Long from = 1001L;
+        final Long to = 1005L;
+        final PriceDTO priceDTO = PriceDTO.builder().fair(200d).source(StationDTO.of(from)).destination(StationDTO.of(to)).distance(14).build();
+        final TicketDTO persistTicketDTO = getTicketDTO(from, to);
+        persistTicketDTO.setTicketId(1000l);
+        persistTicketDTO.setPrice(priceDTO.getFair());
+        persistTicketDTO.setPaymentType(PaymentType.CASH);
+        persistTicketDTO.setTripType(TripType.NOT_TO_START);
+
+        when(bookingService.findByTicketId(persistTicketDTO.getTicketId())).thenReturn(persistTicketDTO);
+        final TripDTO tripDTO = new TripDTO(persistTicketDTO);
+        final TripDTO pesistanceTripDTO = new TripDTO(persistTicketDTO);
+        pesistanceTripDTO.setTripId(1l);
+        when(tripService.findTripByTicketId(pesistanceTripDTO.getTicketId())).thenReturn(pesistanceTripDTO);
+
+        MockHttpServletResponse response = mockMvc.perform(put(path)
+                .contentType(MediaType.APPLICATION_JSON)).andReturn().getResponse();
+        assertEquals(200, response.getStatus());
+
+    }
 }

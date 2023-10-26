@@ -19,7 +19,9 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -54,6 +56,7 @@ class BookTicketControllerTest extends AbstractTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newCustomerJson)).andReturn().getResponse();
         assertEquals(201, response.getStatus());
+        verify(fairCalculateService).getFair(any(), anyLong(), anyLong());
 
     }
 
@@ -73,6 +76,7 @@ class BookTicketControllerTest extends AbstractTest {
         MockHttpServletResponse response = mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON)).andReturn().getResponse();
         assertEquals(200, response.getStatus());
         assertEquals(mapToJson(persistTicketDTO), response.getContentAsString());
+
     }
 
 

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+
 import static java.util.Objects.nonNull;
 
 @RestController
@@ -79,7 +81,8 @@ public class TripController {
     @PostMapping("/")
     public ResponseEntity<TripDTO> saveTrip(@RequestBody TripDTO dto) {
         dto.setTripType(TripType.NOT_TO_START);
-        return ResponseEntity.ok(tripService.saveTrip(dto));
+        final TripDTO tripDTO = tripService.saveTrip(dto);
+        return  ResponseEntity.created(URI.create("/" + tripDTO.getTicketId())).body(tripDTO);
     }
 
 
