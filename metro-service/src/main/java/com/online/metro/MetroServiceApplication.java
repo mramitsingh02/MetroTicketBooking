@@ -6,8 +6,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.online.metro.registration.*"})
-@EnableJpaRepositories(basePackages = {"com.online.metro.registration.*", "com.online.metro.registration.entity.*"})
+@ComponentScan(basePackages = {"com.online.metro.*"})
+@EnableJpaRepositories(basePackages = {"com.online.metro.*", "com.online.metro.entity.*"})
 public class MetroServiceApplication {
 
 	public static void main(String[] args) {
